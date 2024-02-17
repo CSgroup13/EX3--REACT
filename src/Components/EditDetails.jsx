@@ -1,3 +1,4 @@
+// Importing necessary React components and libraries
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 import Avatar from '@mui/material/Avatar';
@@ -11,10 +12,11 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import Autocomplete from '@mui/material/Autocomplete';
 
-
+// Functional component for editing user details
 const EditDetails = (props) => {
   const user = props.user;
 
+  // State variables for various user details and corresponding error messages
   const [firstName, setFirstName] = useState(user.firstName)
   const [errorFirstName, setErrorFirstName] = useState("")
   const [lastName, setLastName] = useState(user.lastName)
@@ -40,15 +42,18 @@ const EditDetails = (props) => {
   const [errorMessage, setErrorMessage] = useState("")
   const cities = ['ירושלים', 'תל אביב-יפו', 'חיפה', 'ראשון לציון', 'פתח תקווה', 'אשדוד', 'נתניה', 'באר שבע', 'חולון', 'בני ברק', 'רמת גן', 'אשקלון', 'בת ים', 'הרצליה', 'רמלה', 'לוד', 'קרית גת', 'רעננה', 'נצרת', 'הוד השרון'];
 
+  // Function to handle the edit details process
   const editDetails = () => {
     if (firstName === null || lastName === null || username === null || email === null || password === null || passwordValidation === null || !birthdate || !image || city === null || street === null || streetNumber === null)
       setErrorMessage("יש למלא את כל השדות כנדרש.")
     else {
+      // Checking if the username already exists in the system
       const userExists = props.users.find((u) => u.username == username && u.email !== email);
       if (userExists) {
         setErrorMessage(' שם המשתמש כבר קיים במערכת.');
       }
       else {
+        // Formatting the birthdate and creating a new user object
         const userBirthdate = new Date(birthdate).toLocaleDateString();
         const newUser = { firstName, lastName, username, email, password, 'birthDate': userBirthdate, image, city, street, streetNumber };
         setErrorMessage('הפרטים עודכנו בהצלחה!');
@@ -57,6 +62,7 @@ const EditDetails = (props) => {
     }
   }
 
+  // Function to handle changes in form fields
   const fieldChange = (e) => {
     switch (e.target.id) {
       case 'firstName':
@@ -162,6 +168,7 @@ const EditDetails = (props) => {
     }
   }
 
+  // Function to handle city selection from the autocomplete dropdown
   const handleCitySelect = (value) => {
     if (value === null) {
       setCity(null);
@@ -173,12 +180,12 @@ const EditDetails = (props) => {
     }
   }
 
+  // Rendering the form for editing user details
   return (
     <Container component="main" maxWidth="sm" dir="rtl">
       <CssBaseline />
       <Box
         sx={{
-          marginTop: 0,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -291,50 +298,57 @@ const EditDetails = (props) => {
                 disablePortal
                 onChange={(event, value) => handleCitySelect(value)}
                 required
-                id="city"
                 options={cities}
+                renderInput={(params) => <TextField {...params} required label="עיר" />}
                 defaultValue={user.city || ""}
-                sx={{ width: 300 }}
-                renderInput={(params) => <TextField {...params} label="עיר" required />}
               />
               <p style={{ color: "red" }}>{errorCity}</p>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} >
               <TextField onChange={(e) => fieldChange(e)}
                 required
                 fullWidth
-                label="רחוב"
                 id="street"
+                label="רחוב"
                 type="text"
                 defaultValue={user.street || ""}
               />
               <p style={{ color: "red" }}>{errorStreet}</p>
             </Grid>
-            <Grid item xs={6}>
+            <Grid item xs={12} sm={6}>
               <TextField onChange={(e) => fieldChange(e)}
                 required
                 fullWidth
-                label="מספר"
-                type="number"
                 id="streetNumber"
+                label="מספר בית"
+                type="number"
                 defaultValue={user.streetNumber || ""}
               />
               <p style={{ color: "red" }}>{errorStreetNumber}</p>
             </Grid>
           </Grid>
           <Button
-            onClick={editDetails}
+            type="button"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            onClick={editDetails}
           >
-            עדכון
+            עדכון פרטים
           </Button>
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Button onClick={props.handleBack} color="primary">
+                ביטול
+              </Button>
+            </Grid>
+          </Grid>
           <p style={{ color: "red" }}>{errorMessage}</p>
         </Box>
       </Box>
     </Container>
-  )
+  );
 }
 
-export default EditDetails
+// Exporting the EditDetails component
+export default EditDetails;

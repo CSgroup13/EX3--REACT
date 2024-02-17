@@ -17,17 +17,21 @@ import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
 
 export default function SystemAdmin(props) {
+    // State for managing edit mode and selected user for editing
     const [edit, setEdit] = useState(false);
     const [editingUser, setEditingUser] = useState(null);
 
+    // Function to logout admin
     const logoutAdmin = () => {
         props.logout();
     }
 
+    // Function to delete a user
     const deleteFromUsers = (email) => {
         props.deleteUser(email);
     }
 
+    // Function to handle edit button click
     const handleEditClick = (user) => {
         setEditingUser(user);
         setEdit(prev => !prev);
@@ -52,6 +56,7 @@ export default function SystemAdmin(props) {
                 <TableContainer component={Paper} dir="rtl">
                     <Table sx={{ minWidth: 650 }} aria-label="simple table">
                         <TableHead>
+                            {/* Table header */}
                             <TableRow>
                                 <TableCell align="right">שם משתמש</TableCell>
                                 <TableCell align="right">שם מלא</TableCell>
@@ -62,6 +67,7 @@ export default function SystemAdmin(props) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
+                            {/* Iterate over users to display user details */}
                             {props.users.map((user) => (
                                 <>
                                     <TableRow
@@ -75,6 +81,7 @@ export default function SystemAdmin(props) {
                                         <TableCell align="right">{user.birthDate}</TableCell>
                                         <TableCell align="right">{user.street} {user.streetNumber}, {user.city}</TableCell>
                                         <TableCell align="right">{user.email}</TableCell>
+                                        {/* Edit and delete buttons */}
                                         <TableCell align="right">
                                             <IconButton aria-label="edit" style={{ color: "blue" }} onClick={() => handleEditClick(user)}>
                                                 <EditIcon />
@@ -89,7 +96,9 @@ export default function SystemAdmin(props) {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                {/* Render EditDetails component if edit mode is enabled */}
                 {edit && <EditDetails user={editingUser} users={props.users} editUser={props.editUser} />}
+                {/* Button for admin logout */}
                 <Button
                     onClick={logoutAdmin}
                     fullWidth

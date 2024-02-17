@@ -11,43 +11,48 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 
 const Login = (props) => {
-    const [username, setUsername] = useState(null)
-    const [errorUsername, setErrorUsername] = useState("")
-    const [password, setPassword] = useState(null)
-    const [errorPassword, setErrorPassword] = useState("")
-    const [errorMessage, setErrorMessage] = useState("")
+    // State for managing username, password, and error messages
+    const [username, setUsername] = useState(null);
+    const [errorUsername, setErrorUsername] = useState("");
+    const [password, setPassword] = useState(null);
+    const [errorPassword, setErrorPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
 
+    // Function to handle user login
     const loginUser = () => {
+        // Validation for empty fields
         if (username === null || password === null) {
-            setErrorMessage("יש למלא את כל השדות כנדרש.")
-        }
-        else {
+            setErrorMessage("יש למלא את כל השדות כנדרש.");
+        } else {
+            // Checking if user is already logged in
             if (sessionStorage["loggedUser"] !== undefined) {
-                const usernameLoggedin = JSON.parse(sessionStorage["loggedUser"]).username
-                setErrorMessage(`המשתמש ${usernameLoggedin} כבר מחובר למערכת.`)
-            }
-            else {
+                const usernameLoggedin = JSON.parse(sessionStorage["loggedUser"]).username;
+                setErrorMessage(`המשתמש ${usernameLoggedin} כבר מחובר למערכת.`);
+            } else {
+                // Handling admin login
                 if (username === 'admin' && password === 'ad12343211ad') {
-                    setErrorMessage("התחברת לממשק המנהל בהצלחה!")
-                    props.loginUser(username, password)
-                }
-                else {
+                    setErrorMessage("התחברת לממשק המנהל בהצלחה!");
+                    props.loginUser(username, password);
+                } else {
+                    // Handling regular user login
                     let users = props.users;
-                    const user = users.find((user) => user.username == username && user.password == password);
+                    const user = users.find((user) => user.username === username && user.password === password);
                     if (user === undefined) {
-                        setErrorMessage("שם משתמש או סיסמא לא נכונים.")
-                    }
-                    else {
-                        setErrorMessage("התחברת למערכת בהצלחה!")
-                        props.loginUser(username, password)
+                        setErrorMessage("שם משתמש או סיסמא לא נכונים.");
+                    } else {
+                        setErrorMessage("התחברת למערכת בהצלחה!");
+                        props.loginUser(username, password);
                     }
                 }
             }
         }
     }
+
+    // Function to handle input field changes
     const fieldChange = (e) => {
-        if (e.target.id == "usernameLogin") {
+        if (e.target.id === "usernameLogin") {
             if (e.target.value !== "admin") {
+                // Validation for username field
                 if (/^[a-zA-Z0-9!@#$%^&*()-_=+`~{}\[\]|;:'",.<>/?\\]*$/.test(e.target.value) && e.target.value.length <= 60) {
                     setUsername(e.target.value);
                     setErrorUsername('');
@@ -55,14 +60,13 @@ const Login = (props) => {
                     setUsername(null);
                     setErrorUsername('שם המשתמש יכול להכיל אותיות לועזיות, מספרים ותווים בלבד. אורך הטקסט לא יעלה על 60 תווים.');
                 }
-            }
-            else {
+            } else {
                 setUsername(e.target.value);
                 setErrorUsername('');
             }
-        }
-        else if (e.target.id == "passwordLogin") {
+        } else if (e.target.id === "passwordLogin") {
             if (e.target.value !== "ad12343211ad") {
+                // Validation for password field
                 if (/^(?=.*[!@#$%^&*()])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d!@#$%^&*()]{7,12}$/.test(e.target.value)) {
                     setPassword(e.target.value);
                     setErrorPassword('');
@@ -70,8 +74,7 @@ const Login = (props) => {
                     setPassword(null);
                     setErrorPassword('הסיסמא צריכה להכיל 7-12 תווים, ולפחות תו אחד מיוחד, אות גדולה אחת ומספר אחד.');
                 }
-            }
-            else {
+            } else {
                 setPassword(e.target.value);
                 setErrorPassword('');
             }
@@ -79,6 +82,7 @@ const Login = (props) => {
     }
 
     return (
+        // Login form component
         <Container component="main" maxWidth="sm" dir="rtl">
             <CssBaseline />
             <Box
@@ -103,6 +107,7 @@ const Login = (props) => {
                 <Box component="form" sx={{ mt: 3 }} >
                     <Grid container spacing={2} >
                         <Grid item xs={12} >
+                            {/* Username input field */}
                             <TextField onChange={(e) => fieldChange(e)}
                                 required
                                 fullWidth
@@ -114,6 +119,7 @@ const Login = (props) => {
                             <p style={{ color: "red" }}>{errorUsername}</p>
                         </Grid>
                         <Grid item xs={12}>
+                            {/* Password input field */}
                             <TextField onChange={(e) => fieldChange(e)}
                                 name="password"
                                 type="password"
@@ -126,6 +132,7 @@ const Login = (props) => {
                             <p style={{ color: "red" }}>{errorPassword}</p>
                         </Grid>
                     </Grid>
+                    {/* Login button */}
                     <Button
                         onClick={loginUser}
                         fullWidth
@@ -134,6 +141,7 @@ const Login = (props) => {
                     >
                         התחברות
                     </Button>
+                    {/* Error message */}
                     <p style={{ color: "red" }}>{errorMessage}</p>
                 </Box>
             </Box>
@@ -141,4 +149,4 @@ const Login = (props) => {
     )
 }
 
-export default Login
+export default Login;
